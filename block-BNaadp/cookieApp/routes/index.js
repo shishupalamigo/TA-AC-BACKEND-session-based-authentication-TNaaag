@@ -5,8 +5,6 @@ var cookieParser = require('cookie-parser');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.cookie('username', 'Shishupal');
-  console.log(req.cookies);
   res.render('index', { title: 'Express' });
 });
 
