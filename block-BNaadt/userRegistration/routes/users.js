@@ -18,14 +18,23 @@ router.get('/dashboard', (req, res, next) => {
 })
 
 router.get('/register', function(req, res, next) {
-    res.render('registration');
+    var error = req.flash('error')[0];
+    res.render('registration', { error });
 });
 
 router.post('/register', (req, res, next) => {
 
   User.create(req.body, (err, user) => {
-    if(err) return next(err);
-    console.log(user);
+    if(err) {
+      if(err.name === 'MongoError') {
+        req.flash('error', 'This email is already in use');
+        return res.redirect('/users/register');
+      }
+      if(err.name === 'ValidationError') {
+        req.flash('error', err.message);
+        return res.redirect('/users/register');
+      }
+    }
     res.redirect('/users/login');
   });
 });
